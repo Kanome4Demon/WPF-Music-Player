@@ -1,4 +1,4 @@
-﻿namespace WPFMusicPlayerDemo.Audio
+﻿namespace WPFMusicPlayerDemo.Audio.Player
 {
     public interface IAudioPlayer : IDisposable
     {

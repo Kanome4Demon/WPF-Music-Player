@@ -1,12 +1,16 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Threading;
 
-namespace WPFMusicPlayerDemo.Audio
+namespace WPFMusicPlayerDemo.Audio.Player
 {
-    public class NAudioPlayer : IAudioPlayer
+    public class NAudioPlayer : IAudioPlayer, IDisposable
     {
+        private readonly Func<ISampleProvider, ISampleProvider> _equalizerFactory;
+        private readonly Func<ISampleProvider, IWavePlayer> _waveOutFactory;
+
         private IWavePlayer _waveOut;
         private AudioFileReader _audioFileReader;
         private ISampleProvider _sampleProvider;
@@ -22,8 +26,13 @@ namespace WPFMusicPlayerDemo.Audio
         public event Action<TimeSpan, TimeSpan> OnPositionChanged;
         public event Action<Exception> PlaybackStopped;
 
-        public NAudioPlayer()
+        public NAudioPlayer(
+            Func<ISampleProvider, ISampleProvider> equalizerFactory = null,
+            Func<ISampleProvider, IWavePlayer> waveOutFactory = null)
         {
+            _equalizerFactory = equalizerFactory != null ? equalizerFactory : (sp => sp);
+            _waveOutFactory = waveOutFactory != null ? waveOutFactory : (sp => new WasapiOut(AudioClientShareMode.Shared, 200));
+
             // 每帧刷新时钟，通知 UI
             CompositionTarget.Rendering += (s, e) =>
             {
@@ -40,11 +49,9 @@ namespace WPFMusicPlayerDemo.Audio
             _isPlayingInternal = false;
             IsPlaying = false;
 
-            // 通知 UI 播放状态改变
             OnPlayStateChanged?.Invoke(false);
             OnPositionChanged?.Invoke(TotalTime, TotalTime);
 
-            // 🔹 触发 PlaybackStopped 事件
             PlaybackStopped?.Invoke(e.Exception);
         }
 
@@ -60,9 +67,12 @@ namespace WPFMusicPlayerDemo.Audio
                 try
                 {
                     _audioFileReader = new AudioFileReader(filePath) { Volume = 1.0f };
-                    _sampleProvider = new EqualizerSampleProvider(_audioFileReader);
 
-                    _waveOut = new WasapiOut(AudioClientShareMode.Shared, 200);
+                    // 通过注入工厂生成均衡器（可替换或不使用）
+                    _sampleProvider = _equalizerFactory(_audioFileReader);
+
+                    // 通过注入工厂生成输出设备（可替换不同类型 WaveOut）
+                    _waveOut = _waveOutFactory(_sampleProvider);
                     _waveOut.Init(_sampleProvider);
                     _waveOut.PlaybackStopped += WaveOut_PlaybackStopped;
 

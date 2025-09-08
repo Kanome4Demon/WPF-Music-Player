@@ -1,4 +1,4 @@
-﻿namespace WPFMusicPlayerDemo.Model
+﻿namespace WPFMusicPlayerDemo.Queue
 {
     public class QueueItem
     {

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using NAudio.Dsp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using WPFMusicPlayerDemo.Audio;
-using WPFMusicPlayerDemo.Queue;
+using WPFMusicPlayerDemo.Audio.Player;
 using WPFMusicPlayerDemo.PlayModes;
+using WPFMusicPlayerDemo.Queue;
+using WPFMusicPlayerDemo.Model.Entities;
 
 namespace WPFMusicPlayerDemo.Core
 {
@@ -24,7 +27,25 @@ namespace WPFMusicPlayerDemo.Core
 
         public MusicPlayerController()
         {
-            _audioPlayer = new NAudioPlayer();          // 注入音频播放实现
+            // 🔹 注入音频播放器，并启用均衡器
+            _audioPlayer = new NAudioPlayer(equalizerFactory: sp =>
+            {
+                var reader = sp;
+                int channels = reader.WaveFormat.Channels;
+
+                var equalizer = new MultiChannelEqualizer(channels, ch =>
+                {
+                    return new IFilter[]
+                    {
+                        new BiQuadFilterAdapter(BiQuadFilter.LowShelf(
+                            reader.WaveFormat.SampleRate, 100, 0.7f, 3f)),
+                        new BiQuadFilterAdapter(BiQuadFilter.HighShelf(
+                            reader.WaveFormat.SampleRate, 10000, 0.7f, 3f))
+                    };
+                });
+
+                return new EqualizerSampleProvider(reader, equalizer);
+            });
             _queueManager = new DefaultQueueManager();  // 注入队列管理实现
 
             // 事件订阅
@@ -92,6 +113,7 @@ namespace WPFMusicPlayerDemo.Core
             _queueManager.SetQueue(paths, startIndex);
             Play(_queueManager.GetCurrent());
         }
+
         #endregion
 
         #region PlaybackControl
