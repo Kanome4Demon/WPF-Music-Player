@@ -1,12 +1,9 @@
 ﻿using Microsoft.Win32;
 using NAudio.Wave;
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using TagLib;
 
-namespace WPFMusicPlayerDemo
+namespace WPFMusicPlayerDemo.Model
 {
     public class MusicListManager
     {

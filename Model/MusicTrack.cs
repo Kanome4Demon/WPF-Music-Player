@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WPFMusicPlayerDemo
+namespace WPFMusicPlayerDemo.Model
 {
     public class MusicTrack
     {

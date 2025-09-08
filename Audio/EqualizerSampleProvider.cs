@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace WPFMusicPlayerDemo;
+namespace WPFMusicPlayerDemo.Audio;
 /// <summary>
 /// 改进后的均衡器，支持多声道
 /// 低频和高频轻度增强
