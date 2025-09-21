@@ -1,0 +1,600 @@
+﻿<UserControl
+    x:Class="WPFMusicPlayerDemo.Views.CloudDriveView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WPFMusicPlayerDemo.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="550"
+    d:DesignWidth="1040"
+    mc:Ignorable="d">
+    <Border
+        x:Name="MusicBorder"
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="3,0,7,5"
+        Background="White"
+        BorderThickness="0"
+        SizeChanged="MusicBorder_SizeChanged">
+        <Grid>
+            <ScrollViewer
+                x:Name="MainScrollViewer"
+                CanContentScroll="True"
+                PreviewMouseWheel="MainScrollViewer_PreviewMouseWheel"
+                VerticalScrollBarVisibility="Hidden">
+
+                <!--  边框厚度  -->
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.Background>
+                        <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,300">
+                            <!--  给 Offset=0 的颜色命名，方便后台修改  -->
+                            <GradientStop x:Name="TopColor" Offset="0" Color="#eff0f5" />
+                            <GradientStop Offset="1" Color="#121212" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  左边图片  -->
+                        <!--  外层额外阴影  -->
+                        <Border
+                            Grid.Column="0"
+                            Margin="15"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            CornerRadius="8">
+
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="10"
+                                    Direction="315"
+                                    Opacity="0.15"
+                                    RenderingBias="Performance"
+                                    ShadowDepth="5"
+                                    Color="#80000000" />
+                            </Border.Effect>
+
+                            <!--  保留你原有的 Border  -->
+                            <Border
+                                Background="Transparent"
+                                CornerRadius="8"
+                                SizeChanged="image_SizeChanged">
+
+                                <Border.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="10"
+                                        Direction="135"
+                                        Opacity="0.25"
+                                        RenderingBias="Performance"
+                                        ShadowDepth="5"
+                                        Color="#80000000" />
+                                </Border.Effect>
+
+                                <Image
+                                    x:Name="MusicImage"
+                                    ClipToBounds="True"
+                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                    SnapsToDevicePixels="True"
+                                    Source="pack://application:,,,/Assets/Images/T.png"
+                                    Stretch="UniformToFill"
+                                    UseLayoutRounding="True" />
+                            </Border>
+                        </Border>
+
+
+
+                        <!--  右边文字  -->
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5,0,0,15"
+                            VerticalAlignment="Bottom">
+                            <TextBlock
+                                Margin="0,0,0,0"
+                                FontSize="15"
+                                Foreground="#eff0f5"
+                                Text="音乐云盘" />
+                            <TextBlock
+                                Margin="0,0,0,8"
+                                FontSize="60"
+                                FontWeight="Bold"
+                                Foreground="#ffffff"
+                                RenderTransformOrigin="0,0"
+                                Text="My CloudDriver1">
+                                <TextBlock.RenderTransform>
+                                    <TranslateTransform X="-4" Y="0" />
+                                    <!--  X=水平偏移，Y=垂直偏移  -->
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+
+                            <TextBlock
+                                Margin="0,0,0,8"
+                                FontSize="11"
+                                Foreground="#eff0f5"
+                                Opacity="0.7"
+                                Text="无简介" />
+                            <TextBlock
+                                Margin="0,0,0,0"
+                                FontSize="12"
+                                Foreground="#eff0f5"
+                                Opacity="0.8"
+                                Text="缃暝 X首歌曲，X小时X分钟" />
+                        </StackPanel>
+
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.RowSpan="2">
+                        <!--  背景层  -->
+                        <Border>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <!--  同一个颜色，不同透明度  -->
+                                    <GradientStop Offset="0" Color="#33121212" />
+                                    <!--  完全透明  -->
+                                    <GradientStop Offset="1" Color="#FF121212" />
+                                    <!--  不透明  -->
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+
+                        <!--  内容层  -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <!--  StackPanel 按钮区  -->
+                                <RowDefinition Height="*" />
+                                <!--  DataGrid 区域  -->
+                            </Grid.RowDefinitions>
+
+                            <!--  内容层：按钮们  -->
+                            <StackPanel
+                                Margin="15,15,15,0"
+                                Background="Transparent"
+                                Orientation="Horizontal">
+                                <Button
+                                    Margin="0,0,0,0"
+                                    Content="播放全部"
+                                    Style="{StaticResource CirclePlayButtonStyle}" />
+
+                                <Button
+                                    Margin="8,0,0,0"
+                                    Click="AddMusic_Click"
+                                    Content="上传音乐"
+                                    Style="{StaticResource ImageButtonStyle}" />
+
+                                <Button
+                                    Margin="3,0,0,0"
+                                    Click="AddMusic_Click"
+                                    Content="上传音乐"
+                                    Style="{StaticResource DowloadButtonStyle}" />
+
+                                <Button
+                                    Margin="3,0,0,0"
+                                    Click="AddMusic_Click"
+                                    Content="添加到播放列表"
+                                    Style="{StaticResource AddListButtonStyle}" />
+                            </StackPanel>
+
+                            <DataGrid
+                                x:Name="MusicDataGrid"
+                                Grid.Row="1"
+                                Margin="15,15,15,15"
+                                AlternationCount="5000"
+                                AutoGenerateColumns="False"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                CanUserSortColumns="False"
+                                GridLinesVisibility="None"
+                                HeadersVisibility="Column"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding MusicList}"
+                                MouseDoubleClick="DataGrid_MouseDoubleClick"
+                                RowHeaderWidth="0"
+                                ScrollViewer.CanContentScroll="False"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                SelectionMode="Single"
+                                SelectionUnit="FullRow">
+
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Click="AddToQueue_Click" Header="添加到播放列表" />
+                                        <MenuItem Click="AddToPlaylist_Click" Header="添加到所选歌单" />
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+                                <DataGrid.Resources>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Foreground" Value="#b3b3b3" />
+                                        <Setter Property="BorderThickness" Value="1,0,0,0" />
+                                        <Setter Property="Padding" Value="10,0,0,0" />
+                                        <Setter Property="FontWeight" Value="Normal" />
+                                        <Setter Property="FontSize" Value="14" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="BorderBrush">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="Transparent" />
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <!--  添加事件用于整行悬停  -->
+                                        <EventSetter Event="MouseEnter" Handler="ColumnHeader_MouseEnter" />
+                                        <EventSetter Event="MouseLeave" Handler="ColumnHeader_MouseLeave" />
+                                        <EventSetter Event="Click" Handler="ColumnHeader_Click" />
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="DataGridColumnHeader">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="*" />
+                                                            <RowDefinition Height="14" />
+                                                            <RowDefinition Height="6" />
+                                                        </Grid.RowDefinitions>
+                                                        <Border
+                                                            x:Name="headerBorder"
+                                                            Padding="{TemplateBinding Padding}"
+                                                            Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                                            <!--  内容 + 箭头  -->
+                                                            <StackPanel
+                                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                VerticalAlignment="Center"
+                                                                Orientation="Horizontal">
+                                                                <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                                                                <Path
+                                                                    x:Name="SortArrow"
+                                                                    Width="10"
+                                                                    Height="10"
+                                                                    Margin="5,0,0,0"
+                                                                    VerticalAlignment="Center"
+                                                                    Data="M 0 4 L 5 0 L 10 4 Z"
+                                                                    Fill="#50C878"
+                                                                    RenderTransformOrigin="0.5,0.5"
+                                                                    Stretch="Uniform"
+                                                                    Visibility="Collapsed" />
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <!--  下划线  -->
+                                                        <Rectangle
+                                                            Grid.Row="1"
+                                                            Height="1.2"
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Center"
+                                                            Fill="#888888" />
+                                                    </Grid>
+
+                                                    <ControlTemplate.Triggers>
+                                                        <!--  升序  -->
+                                                        <Trigger Property="SortDirection" Value="Ascending">
+                                                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                                            <Setter TargetName="SortArrow" Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <RotateTransform Angle="0" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+
+                                                        <!--  降序  -->
+                                                        <Trigger Property="SortDirection" Value="Descending">
+                                                            <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                                            <Setter TargetName="SortArrow" Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <RotateTransform Angle="180" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <!--  ✅ 新增触发器：首尾列去除边框  -->
+                                        <Style.Triggers>
+                                            <!--  第一个列头（DisplayIndex = 0）去掉左边框  -->
+                                            <Trigger Property="DisplayIndex" Value="0">
+                                                <Setter Property="BorderThickness" Value="0,0,0,0" />
+                                            </Trigger>
+                                        </Style.Triggers>
+
+                                    </Style>
+
+                                    <!--  单元格背景透明，防止覆盖行背景  -->
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Foreground}" />
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                    </Style>
+
+                                    <!--  行样式  -->
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Foreground" Value="#b3b3b3" />
+                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="DataGridRow">
+                                                    <Grid>
+                                                        <!--  圆角背景，不撑宽  -->
+                                                        <Border
+                                                            x:Name="RowBackground"
+                                                            MinHeight="40"
+                                                            HorizontalAlignment="Stretch"
+                                                            Background="{TemplateBinding Background}"
+                                                            CornerRadius="5"
+                                                            SnapsToDevicePixels="True" />
+                                                        <!--  正常单元格  -->
+                                                        <DataGridCellsPresenter />
+                                                    </Grid>
+
+                                                    <ControlTemplate.Triggers>
+                                                        <!--  悬停  -->
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="RowBackground" Property="Background" Value="#2a2a2b" />
+                                                            <Setter Property="Foreground" Value="#ffffff" />
+                                                        </Trigger>
+                                                        <!--  选中未悬停  -->
+                                                        <MultiTrigger>
+                                                            <MultiTrigger.Conditions>
+                                                                <Condition Property="IsSelected" Value="True" />
+                                                                <Condition Property="IsMouseOver" Value="False" />
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter TargetName="RowBackground" Property="Background" Value="#5a5a5a" />
+                                                            <Setter Property="Foreground" Value="#ffffff" />
+                                                        </MultiTrigger>
+                                                        <!--  选中且悬停  -->
+                                                        <MultiTrigger>
+                                                            <MultiTrigger.Conditions>
+                                                                <Condition Property="IsSelected" Value="True" />
+                                                                <Condition Property="IsMouseOver" Value="True" />
+                                                            </MultiTrigger.Conditions>
+                                                            <Setter TargetName="RowBackground" Property="Background" Value="#3a3a3a" />
+                                                            <Setter Property="Foreground" Value="#ffffff" />
+                                                        </MultiTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+
+                                </DataGrid.Resources>
+
+                                <!--  列定义  -->
+                                <DataGrid.Columns>
+                                    <!--  新增编号列  -->
+                                    <DataGridTemplateColumn
+                                        Width="30"
+                                        Header="#"
+                                        IsReadOnly="True">
+                                        <DataGridTemplateColumn.HeaderStyle>
+                                            <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="Padding" Value="0" />
+                                            </Style>
+                                        </DataGridTemplateColumn.HeaderStyle>
+
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex, Converter={StaticResource AddOneConverter}}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!--  操作列  -->
+                                    <DataGridTemplateColumn
+                                        Width="40"
+                                        Header="操作"
+                                        IsReadOnly="True">
+                                        <DataGridTemplateColumn.HeaderStyle>
+                                            <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="Padding" Value="0,0" />
+                                            </Style>
+                                        </DataGridTemplateColumn.HeaderStyle>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Padding="4,2"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.AddToQueueCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="＋"
+                                                    Cursor="Hand"
+                                                    Foreground="Gray">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTextColumn
+                                        Width="300"
+                                        Binding="{Binding Title}"
+                                        Header="标题">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="Foreground" Value="White" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn
+                                        Width="200"
+                                        Binding="{Binding Artist}"
+                                        Header="歌手">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn
+                                        Width="250"
+                                        Binding="{Binding Album}"
+                                        Header="专辑">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn
+                                        Width="*"
+                                        Binding="{Binding DurationDisplay}"
+                                        Header="时间">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Padding" Value="10,0" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+            <!--  顶层覆盖滚动条  -->
+            <Grid
+                x:Name="CustomScrollBar"
+                Width="8"
+                Margin="0,20,0,20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
+                Opacity="0">
+
+                <!--  轨道  -->
+                <Border x:Name="Track" Background="Transparent" />
+
+                <!--  滑块  -->
+                <Thumb
+                    x:Name="Thumb"
+                    Width="8"
+                    MinHeight="30"
+                    VerticalAlignment="Top"
+                    Background="#b9c1c8"
+                    Cursor="Hand">
+                    <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border
+                                x:Name="thumbBorder"
+                                Background="{TemplateBinding Background}"
+                                Opacity="0.6">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+
+                                        <!--  默认状态：从高亮回落  -->
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="thumbBorder"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="0.5"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <!--  悬停状态：淡入  -->
+                                        <VisualState x:Name="MouseOver">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="thumbBorder"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="0.8"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <!--  按下状态：稍微暗一点  -->
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="thumbBorder"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="1"
+                                                    Duration="0:0:0.3">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Border>
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

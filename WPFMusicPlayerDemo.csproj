@@ -11,12 +11,163 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Images\Icons\A.jpg" />
+    <None Remove="Assets\Images\Icons\add-list.png" />
+    <None Remove="Assets\Images\Icons\add.png" />
+    <None Remove="Assets\Images\Icons\arrows.png" />
+    <None Remove="Assets\Images\Icons\B.png" />
+    <None Remove="Assets\Images\Icons\back.png" />
+    <None Remove="Assets\Images\Icons\bell.png" />
+    <None Remove="Assets\Images\Icons\check.png" />
+    <None Remove="Assets\Images\Icons\close.png" />
+    <None Remove="Assets\Images\Icons\cloud-computing.png" />
+    <None Remove="Assets\Images\Icons\cloud-computing1.png" />
+    <None Remove="Assets\Images\Icons\cloud-computing2.png" />
+    <None Remove="Assets\Images\Icons\download.png" />
+    <None Remove="Assets\Images\Icons\downloading.png" />
+    <None Remove="Assets\Images\Icons\expand.png" />
+    <None Remove="Assets\Images\Icons\group.png" />
+    <None Remove="Assets\Images\Icons\loop.png" />
+    <None Remove="Assets\Images\Icons\lyrics.png" />
+    <None Remove="Assets\Images\Icons\menu.png" />
+    <None Remove="Assets\Images\Icons\more.png" />
+    <None Remove="Assets\Images\Icons\next.png" />
+    <None Remove="Assets\Images\Icons\nextplay.png" />
+    <None Remove="Assets\Images\Icons\pause.png" />
+    <None Remove="Assets\Images\Icons\play.png" />
+    <None Remove="Assets\Images\Icons\playlist.png" />
+    <None Remove="Assets\Images\Icons\preplay.png" />
+    <None Remove="Assets\Images\Icons\queue.png" />
+    <None Remove="Assets\Images\Icons\search.png" />
+    <None Remove="Assets\Images\Icons\shuffle.png" />
+    <None Remove="Assets\Images\Icons\shuffle_m.png" />
+    <None Remove="Assets\Images\Icons\sound.png" />
+    <None Remove="Assets\Images\Icons\uncheck.png" />
+    <None Remove="Assets\Images\T.png" />
+    <None Remove="Assets\Images\W1.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Images\Icons\back.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\lyrics.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\more.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\next.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\nextplay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\play.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\preplay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\sound.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ColorThief.ImageSharp" Version="1.0.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MaterialDesignInXamlToolkitAddOns" Version="0.0.63" />
     <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="SharpVectors" Version="1.8.5" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="App.xaml" />
+    <Content Include="Assets\Images\Icons\A.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\add-list.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\add.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\arrows.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\B.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\bell.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\check.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\close.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\cloud-computing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\cloud-computing1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\cloud-computing2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\download.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\downloading.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\expand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\group.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\loop.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\menu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\playlist.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\queue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\search.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\shuffle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\shuffle_m.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\uncheck.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\T.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\W1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\PlaylistView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

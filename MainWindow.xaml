@@ -2,32 +2,25 @@
     x:Class="WPFMusicPlayerDemo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="clr-namespace:WPFMusicPlayerDemo.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WPFMusicPlayerDemo"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:views="clr-namespace:WPFMusicPlayerDemo.Views"
     Title="MainWindow"
     Width="1280"
     Height="720"
-    AllowsTransparency="True"
+    AllowsTransparency="False"
     Background="Transparent"
     MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
     WindowStyle="None"
     mc:Ignorable="d">
 
-    <Border
-        x:Name="MainBorder"
-        Margin="20"
-        Background="White">
-        <Border.Effect>
-            <DropShadowEffect
-                BlurRadius="20"
-                Opacity="0.5"
-                ShadowDepth="0"
-                Color="Black" />
-        </Border.Effect>
+    <Border x:Name="MainBorder" Background="black">
 
-        <Grid>
+        <Grid Cursor="">
             <Grid.RowDefinitions>
                 <RowDefinition Height="72" />
                 <RowDefinition Height="*" />
@@ -42,416 +35,543 @@
             <Grid
                 Grid.Row="0"
                 Grid.ColumnSpan="2"
-                Background="#50C878"
+                Background="black"
                 ClipToBounds="True">
 
                 <StackPanel
-                    Margin="280,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="left"
+                    VerticalAlignment="Stretch"
                     Orientation="Horizontal">
-                    <TextBox
-                        x:Name="InputTextBox"
-                        Grid.Column="0"
-                        Width="200"
-                        Height="25"
-                        Padding="0,3"
-                        BorderThickness="0,0,0,0"
-                        FontFamily="Microsoft YaHei"
-                        FontSize="14"
-                        TextChanged="InputTextBox_TextChanged" />
-                    <Button
-                        Width="25"
-                        Height="25"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Background="White"
-                        BorderThickness="0,0,0,0"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="10"
-                        Foreground="#333333">
 
-                        <Border
-                            Width="17"
-                            Height="17"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Background="#E1E1E1"
-                            CornerRadius="3">
+                    <Button Margin="15,0,0,0" Style="{StaticResource MoreButtonStyle}" />
 
-                            <!--  图标内容  -->
-                            <TextBlock
+                    <Button Margin="15,0,0,0" Style="{StaticResource BackButtonStyle}" />
+
+                    <Button Margin="0,0,0,0" Style="{StaticResource ForwardButtonStyle}" />
+
+                </StackPanel>
+
+                <Grid
+                    x:Name="SearchContainer"
+                    Width="400"
+                    Height="40"
+                    MouseEnter="SearchContainer_MouseEnter"
+                    MouseLeave="SearchContainer_MouseLeave"
+                    RenderOptions.BitmapScalingMode="Fant"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True">
+
+                    <Grid.Resources>
+                        <!--  悬停进  -->
+                        <Storyboard x:Key="HoverIn">
+                            <ColorAnimation
+                                Storyboard.TargetName="SearchBoxContainer"
+                                Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                To="#323232"
+                                Duration="0:0:0.2" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="HighlightBorder"
+                                Storyboard.TargetProperty="Opacity"
+                                To="0.05"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+
+                        <!--  悬停出（仅用于没有聚焦时回退）  -->
+                        <Storyboard x:Key="HoverOut">
+                            <ColorAnimation
+                                Storyboard.TargetName="SearchBoxContainer"
+                                Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                To="#1f1f1f"
+                                Duration="0:0:0.2" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="HighlightBorder"
+                                Storyboard.TargetProperty="Opacity"
+                                To="0"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+
+                        <!--  聚焦进（持久化）  -->
+                        <Storyboard x:Key="FocusIn">
+                            <ColorAnimation
+                                Storyboard.TargetName="SearchBoxContainer"
+                                Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                To="#323232"
+                                Duration="0:0:0.2" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="HighlightBorder"
+                                Storyboard.TargetProperty="Opacity"
+                                To="1"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+
+                        <!--  失焦（点击其他地方时回退）  -->
+                        <Storyboard x:Key="FocusOut">
+                            <ColorAnimation
+                                Storyboard.TargetName="SearchBoxContainer"
+                                Storyboard.TargetProperty="(Background).(SolidColorBrush.Color)"
+                                To="#1f1f1f"
+                                Duration="0:0:0.2" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="HighlightBorder"
+                                Storyboard.TargetProperty="Opacity"
+                                To="0"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+                    </Grid.Resources>
+
+                    <!--  主体容器  -->
+                    <Border
+                        x:Name="SearchBoxContainer"
+                        Background="#1f1f1f"
+                        CornerRadius="20"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        SnapsToDevicePixels="True"
+                        UseLayoutRounding="True">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  搜索图标  -->
+                            <Border
+                                Grid.Column="0"
+                                Width="20"
+                                Height="20"
+                                Margin="12,0,8,0"
+                                VerticalAlignment="Center"
+                                RenderOptions.BitmapScalingMode="Fant"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="True">
+                                <Border.Background>
+                                    <SolidColorBrush Color="#b3b3b3" />
+                                </Border.Background>
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/search.png" />
+                                </Border.OpacityMask>
+                            </Border>
+
+                            <!--  输入框 + 占位符  -->
+                            <Grid Grid.Column="1" VerticalAlignment="Center">
+                                <TextBox
+                                    x:Name="SearchTextBox"
+                                    Padding="2,0,0,2"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    CaretBrush="White"
+                                    FontFamily="Microsoft YaHei"
+                                    FontSize="14"
+                                    Foreground="White"
+                                    GotFocus="SearchTextBox_GotFocus"
+                                    LostKeyboardFocus="SearchTextBox_LostKeyboardFocus"
+                                    TextChanged="SearchTextBox_TextChanged" />
+                                <TextBlock
+                                    x:Name="PlaceholderTextBlock"
+                                    Padding="4,0,0,2"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Microsoft YaHei"
+                                    FontSize="14"
+                                    Foreground="#b3b3b3"
+                                    IsHitTestVisible="False"
+                                    Text="搜索音乐、歌手、专辑..."
+                                    Visibility="Visible" />
+                            </Grid>
+
+                            <!--  清除按钮  -->
+                            <Button
+                                x:Name="ClearButton"
+                                Grid.Column="2"
+                                Margin="8,0,7,0"
+                                VerticalAlignment="Center"
+                                Click="ClearButton_Click"
+                                Style="{StaticResource ClearButtonStyle}"
+                                Visibility="Collapsed" />
+
+                            <!--  分割线  -->
+                            <Border
+                                Grid.Column="3"
+                                Width="1"
+                                Margin="0,10,0,10"
+                                Background="#b3b3b3" />
+
+                            <!--  自定义按钮  -->
+                            <Button
+                                x:Name="CustomButton"
+                                Grid.Column="4"
+                                Margin="8,0,12,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Background="Transparent"
-                                RenderTransformOrigin="0.5,0.5"
-                                Text="&#xE11A;">
-                                <TextBlock.RenderTransform>
-                                    <ScaleTransform ScaleX="-1" />
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
-                        </Border>
-                    </Button>
-                </StackPanel>
+                                Click="CustomButton_Click"
+                                Style="{StaticResource ExpandButtonStyle}" />
+                        </Grid>
+                    </Border>
+
+                    <!--  最顶层描边高亮框（背景透明，仅描边）  -->
+                    <Border
+                        x:Name="HighlightBorder"
+                        Background="Transparent"
+                        BorderBrush="White"
+                        BorderThickness="1.5"
+                        CornerRadius="22"
+                        IsHitTestVisible="False"
+                        Opacity="0"
+                        RenderOptions.BitmapScalingMode="Fant"
+                        SnapsToDevicePixels="True"
+                        UseLayoutRounding="True" />
+                </Grid>
+
 
                 <!--  最小化  -->
                 <StackPanel
-                    Margin="0,0,25,0"
+                    Margin="0,0,0,0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     Orientation="Horizontal">
-                    <Button
-                        Width="25"
-                        Height="25"
-                        Margin="0,0,5,0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="MinButton_Click"
-                        Content="&#xE921;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Foreground="White"
-                        ToolTip="最小化" />
 
-                    <!--  最大化/还原按钮  -->
+                    <Button Margin="0,0,10,0" Style="{StaticResource NewItemButtonStyle}" />
+
+                    <Button Margin="0,0,24,0" Style="{StaticResource FrindZoneButtonStyle}" />
+
+                    <!--  用户按钮  -->
+                    <Button Margin="0,0,10,0" Style="{StaticResource UserButtonStyle}" />
+
+                    <!--  最小化  -->
+                    <Button
+                        Click="MinButton_Click"
+                        Cursor="Hand"
+                        Style="{StaticResource MinimizeButtonStyle}" />
+
+                    <!--  最大化 / 还原  -->
                     <Button
                         x:Name="MaxRestoreButton"
-                        Width="25"
-                        Height="25"
-                        Margin="0,0,5,0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
                         Click="MaxRestoreButton_Click"
-                        Content="&#xE922;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Foreground="White"
-                        ToolTip="最大化" />
+                        Cursor="Hand"
+                        Style="{StaticResource MaximizeButtonStyle}" />
 
                     <!--  关闭  -->
-                    <Button
-                        Width="25"
-                        Height="25"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="CloseButton_Click"
-                        Content="&#xE8BB;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="14"
-                        Foreground="White"
-                        ToolTip="关闭" />
-
+                    <Button Click="CloseButton_Click" Style="{StaticResource CloseButtonStyle}" />
                 </StackPanel>
+
 
             </Grid>
 
-            <Grid Grid.Row="1" Background="#ffffff">
-
-                <!--  右边渐变  -->
-                <Rectangle
-                    Width="1.25"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Stretch">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                            <GradientStop Offset="0" Color="#26000000" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <Rectangle Height="3" VerticalAlignment="Bottom">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
-                            <GradientStop Offset="0" Color="#26000000" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <StackPanel
-                    Margin="0,0,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Orientation="Vertical">
-                    <DataGrid
+            <!--<DataGrid
                         x:Name="QueueDataGrid"
                         Height="220"
                         AutoGenerateColumns="False"
+                        Background="#121212"
                         CanUserAddRows="False"
                         IsReadOnly="True"
                         SelectionMode="Single">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
+                <DataGrid.Columns>
+                    <DataGridTextColumn
                                 Width="40"
                                 Binding="{Binding Index}"
                                 Header="#" />
-                            <DataGridTextColumn
+                    <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Title}"
                                 Header="Title" />
-                            <DataGridTextColumn
+                    <DataGridTextColumn
                                 Width="150"
                                 Binding="{Binding Artist}"
                                 Header="Artist" />
-                            <DataGridTextColumn
+                    <DataGridTextColumn
                                 Width="80"
                                 Binding="{Binding Duration}"
                                 Header="Duration" />
-                        </DataGrid.Columns>
-                    </DataGrid>
+                </DataGrid.Columns>
+            </DataGrid>-->
 
-                    <DataGrid
-                        x:Name="PlaylistDataGrid"
-                        Height="220"
-                        AutoGenerateColumns="False"
-                        CanUserAddRows="False"
-                        IsReadOnly="True"
-                        SelectionMode="Single"
-                        MouseDoubleClick="PlaylistDataGrid_MouseDoubleClick">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Width="40"
-                                Binding="{Binding Index}"
-                                Header="#" />
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Title}"
-                                Header="Title" />
-                            <DataGridTextColumn
-                                Width="150"
-                                Binding="{Binding Artist}"
-                                Header="Artist" />
-                            <DataGridTextColumn
-                                Width="80"
-                                Binding="{Binding Duration}"
-                                Header="Duration" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <!--  新建歌单按钮  -->
-                    <Button
-                        Width="80"
-                        Margin="0,10,0,0"
-                        Click="CreatePlaylistButton_Click"
-                        Content="新建歌单" />
-
-                    <!--  歌单选择 ComboBox  -->
-                    <ComboBox
-                        x:Name="PlaylistComboBox"
-                        Width="80"
-                        Margin="0,10,0,10"
-                        DisplayMemberPath="Name"
-                        SelectionChanged="PlaylistComboBox_SelectionChanged" />
-                </StackPanel>
-
+            <Grid Grid.Row="1" Background="Black">
+                <views:MenuList
+                    x:Name="MenuListControl"
+                    CloudDriveClicked="MenuListControl_CloudDriveClicked"
+                    PlaylistChanged="MenuListControl_PlaylistChanged"
+                    PlaylistViewClicked="MenuListControl_PlaylistViewClicked" />
             </Grid>
 
-            <Grid
-                Grid.Row="1"
-                Grid.Column="1"
-                Background="#ffffff">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Button
-                    Grid.Row="0"
-                    Margin="5"
-                    Click="AddMusic_Click"
-                    Content="添加音乐文件" />
-
-                <DataGrid
-                    x:Name="MusicDataGrid"
-                    Grid.Row="1"
-                    Margin="5"
-                    AutoGenerateColumns="False"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding MusicList}"
-                    MouseDoubleClick="DataGrid_MouseDoubleClick">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="200"
-                            Binding="{Binding Title}"
-                            Header="标题" />
-                        <DataGridTextColumn
-                            Width="100"
-                            Binding="{Binding Artist}"
-                            Header="歌手" />
-                        <DataGridTextColumn
-                            Width="100"
-                            Binding="{Binding Album}"
-                            Header="专辑" />
-                        <DataGridTextColumn
-                            Width="50"
-                            Binding="{Binding Format}"
-                            Header="格式" />
-                        <DataGridTextColumn
-                            Width="50"
-                            Binding="{Binding Size}"
-                            Header="大小" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Duration}"
-                            Header="时长" />
-                    </DataGrid.Columns>
-                    <DataGrid.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Click="AddToQueue_Click" Header="添加到播放列表" />
-                            <MenuItem Click="AddToPlaylist_Click" Header="添加到所选歌单" />
-                        </ContextMenu>
-                    </DataGrid.ContextMenu>
-                </DataGrid>
-
-                <!--  左边渐变  -->
-                <Rectangle
-                    Width="1.25"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Stretch">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Offset="0" Color="#26000000" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <Rectangle
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Height="3"
-                    VerticalAlignment="Bottom">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
-                            <GradientStop Offset="0" Color="#26000000" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-
+            <Grid Grid.Row="1" Grid.Column="1">
+                <views:CloudDriveView x:Name="CloudDriveViewControl" Visibility="Visible" />
+                <views:PlaylistView x:Name="PlaylistViewControl" Visibility="Collapsed" />
             </Grid>
+
 
             <Grid
                 Grid.Row="2"
                 Grid.ColumnSpan="2"
-                Background="#ffffff">
+                Background="Black">
 
-                <!--  上一首  -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <!--  左  -->
+                    <ColumnDefinition Width="5*" />
+                    <!--  中  -->
+                    <ColumnDefinition Width="2*" />
+                    <!--  右  -->
+                </Grid.ColumnDefinitions>
+
+                <!--  🎵 左边：当前歌曲信息  -->
                 <StackPanel
-                    Margin="0,0,0,0"
+                    Grid.Column="0"
+                    Margin="20,0,0,0"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+
+                    <TextBlock
+                        x:Name="SongTitleText"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="Reline"
+                        TextTrimming="CharacterEllipsis" />
+
+                    <TextBlock
+                        x:Name="ArtistText"
+                        FontSize="14"
+                        Foreground="#AAAAAA"
+                        Text="Rob Laufer"
+                        TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <!--  🎛 中间：播放控制 + 进度条  -->
+                <StackPanel
+                    Grid.Column="1"
                     HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    Orientation="Vertical"
+                    RenderTransformOrigin="0.5,0.5">
+
+                    <!--  上方控制按钮  -->
+                    <StackPanel
+                        Margin="0,0,0,8"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <Button
+                            x:Name="PlayModeButton"
+                            Margin="0,0,0,1"
+                            Click="BackButton_Click"
+                            Style="{StaticResource PlayModeButtonStyle}"
+                            ToolTip="上一首" />
+
+                        <!--  上一首  -->
+                        <Button
+                            x:Name="BackButton"
+                            Margin="0,0,18,1"
+                            Click="BackButton_Click"
+                            Style="{StaticResource PrePlayButtonStyle}"
+                            ToolTip="上一首" />
+
+                        <!--  播放/暂停  -->
+                        <Button
+                            x:Name="PlayPauseButton"
+                            Click="PlayPauseButton_Click"
+                            Style="{StaticResource PlayButtonStyle}"
+                            ToolTip="播放" />
+
+                        <!--  下一首  -->
+                        <Button
+                            x:Name="NextButton"
+                            Margin="18,0,0,1"
+                            Click="NextButton_Click"
+                            Style="{StaticResource NextPlayButtonStyle}"
+                            ToolTip="下一首" />
+
+                        <Button
+                            x:Name="lyricsButton"
+                            Margin="0,0,0,1"
+                            Click="BackButton_Click"
+                            Style="{StaticResource lyricsButtonStyle}"
+                            ToolTip="上一首" />
+                    </StackPanel>
+
+                    <!--  下方进度条  -->
+                    <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        Orientation="Vertical"
+                        RenderTransformOrigin="0.5,0.5">
+
+                        <!--  进度条  -->
+                        <StackPanel
+                            Margin="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+
+                            <!--  当前播放时间  -->
+                            <TextBlock
+                                x:Name="CurrentTimeText"
+                                Margin="0,0,10,0"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="0:00" />
+
+                            <!--  Slider  -->
+                            <Slider
+                                x:Name="ProgressSlider"
+                                Width="600"
+                                Maximum="1"
+                                Minimum="0"
+                                Orientation="Horizontal"
+                                PreviewMouseLeftButtonDown="ProgressSlider_PreviewMouseDown"
+                                PreviewMouseLeftButtonUp="ProgressSlider_PreviewMouseUp"
+                                Value="0">
+
+                                <Slider.Resources>
+                                    <Style x:Key="TrackFillStyle" TargetType="RepeatButton">
+                                        <Setter Property="Focusable" Value="False" />
+                                        <Setter Property="Height" Value="6" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="3" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Slider.Resources>
+
+                                <Slider.Template>
+                                    <ControlTemplate TargetType="Slider">
+                                        <Grid
+                                            x:Name="RootGrid"
+                                            Height="12"
+                                            VerticalAlignment="Center">
+                                            <!--  灰色背景条  -->
+                                            <Border
+                                                Height="6"
+                                                VerticalAlignment="Center"
+                                                Background="#555"
+                                                CornerRadius="3" />
+
+                                            <!--  Track 蓝色填充  -->
+                                            <Track
+                                                x:Name="PART_Track"
+                                                Maximum="{TemplateBinding Maximum}"
+                                                Minimum="{TemplateBinding Minimum}"
+                                                Orientation="Horizontal"
+                                                Value="{TemplateBinding Value}">
+                                                <Track.DecreaseRepeatButton>
+                                                    <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource TrackFillStyle}" />
+                                                </Track.DecreaseRepeatButton>
+
+                                                <Track.IncreaseRepeatButton>
+                                                    <RepeatButton Visibility="Collapsed" />
+                                                </Track.IncreaseRepeatButton>
+
+                                                <!--  圆形 Thumb  -->
+                                                <Track.Thumb>
+                                                    <Thumb
+                                                        x:Name="ThumbElement"
+                                                        Width="12"
+                                                        Height="12"
+                                                        VerticalAlignment="Center"
+                                                        Background="White"
+                                                        BorderBrush="Gray"
+                                                        BorderThickness="1"
+                                                        Opacity="0"
+                                                        SnapsToDevicePixels="True">
+                                                        <Thumb.RenderTransform>
+                                                            <!--  右移半个宽度，让圆心对齐蓝色条末端  -->
+                                                            <TranslateTransform X="-6" />
+                                                        </Thumb.RenderTransform>
+                                                        <Thumb.Template>
+                                                            <ControlTemplate TargetType="Thumb">
+                                                                <Ellipse
+                                                                    Width="{TemplateBinding Width}"
+                                                                    Height="{TemplateBinding Height}"
+                                                                    Fill="{TemplateBinding Background}"
+                                                                    Stroke="{TemplateBinding BorderBrush}"
+                                                                    StrokeThickness="{TemplateBinding BorderThickness}" />
+                                                            </ControlTemplate>
+                                                        </Thumb.Template>
+                                                    </Thumb>
+                                                </Track.Thumb>
+                                            </Track>
+                                        </Grid>
+
+                                        <!--  悬停整条显示小圆  -->
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetName="ThumbElement"
+                                                                Storyboard.TargetProperty="Opacity"
+                                                                To="1"
+                                                                Duration="0:0:0.15" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation
+                                                                Storyboard.TargetName="ThumbElement"
+                                                                Storyboard.TargetProperty="Opacity"
+                                                                To="0"
+                                                                Duration="0:0:0.2" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Slider.Template>
+                            </Slider>
+
+                            <!--  总时间  -->
+                            <TextBlock
+                                x:Name="TotalTimeText"
+                                Margin="10,0,0,0"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="3:45" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!--  ⚙️ 右边：杂项按钮（播放模式、音量、设置等）  -->
+                <StackPanel
+                    Grid.Column="2"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
 
-                    <Slider
-                        x:Name="ProgressSlider"
-                        Width="800"
-                        Maximum="1"
-                        Minimum="0"
-                        PreviewMouseLeftButtonDown="ProgressSlider_PreviewMouseDown"
-                        PreviewMouseLeftButtonUp="ProgressSlider_PreviewMouseUp"
-                        Value="0" />
-                    <TextBlock x:Name="CurrentTimeText" />
-                    <TextBlock x:Name="TotalTimeText" />
-
-                    <Button
-                        Width="40"
-                        Height="40"
-                        Margin="0,0,15,0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="BackButton_Click"
-                        Content="&#xE100;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        Foreground="#50C878"
-                        ToolTip="上一首" />
-
-
-                    <!--  暂停/播放  -->
-                    <Button
-                        x:Name="PlayPauseButton"
-                        Width="40"
-                        Height="40"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="#50C878"
-                        BorderThickness="0"
-                        Click="PlayPauseButton_Click"
-                        ToolTip="播放">
-
-                        <!--  圆形模板  -->
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Grid>
-                                    <Ellipse x:Name="circle" Fill="{TemplateBinding Background}" />
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Grid>
-
-                                <!--  鼠标悬停和按下效果  -->
-                                <ControlTemplate.Triggers>
-                                    <!--  鼠标悬停  -->
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="circle" Property="Fill" Value="#3FAE66" />
-                                    </Trigger>
-                                    <!--  按下  -->
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="circle" Property="Fill" Value="#2E8B57" />
-                                    </Trigger>
-                                    <!--  禁用状态  -->
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter TargetName="circle" Property="Fill" Value="#A9A9A9" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-
-
-                        <!--  使用图标字体作为内容  -->
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="20"
-                            Foreground="White"
-                            Text="&#xE768;" />
-                    </Button>
-
-                    <!--  下一首  -->
-                    <Button
-                        Width="40"
-                        Height="40"
-                        Margin="15,0,0,0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Click="NextButton_Click"
-                        Content="&#xE101;"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        Foreground="#50C878"
-                        ToolTip="下一首" />
-                    <Button
+                    <!--<Button
                         x:Name="PlayModeButton"
                         Width="120"
                         Height="30"
                         Click="PlayModeButton_Click"
-                        Content="顺序循环" />
+                        Content="顺序循环" />-->
 
+                    <Button
+                        Margin="0,0,0,0"
+                        Style="{StaticResource SoundButtonStyle}"
+                        ToolTip="下一首" />
+
+                    <Button
+                        Margin="0,0,0,0"
+                        Style="{StaticResource QueueButtonStyle}"
+                        ToolTip="下一首" />
                 </StackPanel>
-
             </Grid>
 
         </Grid>

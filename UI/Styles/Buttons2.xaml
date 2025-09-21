@@ -1,0 +1,668 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  ✅ 修正版  -->
+    <Style x:Key="CreateButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="65" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Background" Value="#333333" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid">
+                        <!--  用 SolidColorBrush 包装内部背景，允许动画  -->
+                        <Border x:Name="ButtonBorder" CornerRadius="14">
+                            <Border.Background>
+                                <SolidColorBrush Color="#333333" />
+                            </Border.Background>
+                        </Border>
+
+                        <StackPanel
+                            Margin="0,0,1,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Cursor=""
+                            Orientation="Horizontal">
+                            <Border
+                                x:Name="PlusIconBorder"
+                                Width="12"
+                                Height="12"
+                                Margin="0,0,5,0"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="PlusIconBrush" Color="#8e8e8e" />
+                                </Border.Background>
+                                <Border.RenderTransform>
+                                    <RotateTransform x:Name="PlusIconRotate" Angle="0" />
+                                </Border.RenderTransform>
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/add.png" />
+                                </Border.OpacityMask>
+                            </Border>
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="创建" />
+                        </StackPanel>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#232323"
+                                            Duration="0:0:0.1" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="PlusIconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#8e8e8e"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#323232"
+                                            Duration="0:0:0.2" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="PlusIconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="White"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PlayListSellectButton" TargetType="Button">
+        <Setter Property="Width" Value="50" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder" CornerRadius="14">
+                            <Border.Background>
+                                <SolidColorBrush Color="#333333" />
+                            </Border.Background>
+                        </Border>
+
+                        <StackPanel
+                            Margin="0,0,1,1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="White"
+                                Text="歌单" />
+                        </StackPanel>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#232323"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#323232"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <SolidColorBrush x:Key="HoverBrush" Color="Transparent" />
+
+    <!--  按钮样式  -->
+    <Style x:Key="SellectButton" TargetType="Button">
+        <Setter Property="Width" Value="50" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="ScaleRoot" ScaleX="0.9" ScaleY="0.84" />
+                        </Grid.RenderTransform>
+
+                        <!--  背景层  -->
+                        <Border x:Name="HoverBorder" CornerRadius="14">
+                            <Border.Background>
+                                <SolidColorBrush Color="#232323" />
+                            </Border.Background>
+                        </Border>
+
+                        <!--  内容  -->
+                        <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True" />
+
+                        <!--  鼠标悬停/按下动画  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="HoverBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#232323"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="HoverBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#323232"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="HoverBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SearchButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Background" Value="#121212" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid">
+                        <!--  圆形背景  -->
+                        <Border
+                            x:Name="ButtonBorder"
+                            Background="#121212"
+                            CornerRadius="18" />
+
+                        <!--  图标  -->
+                        <Border
+                            x:Name="IconBorder"
+                            Width="18"
+                            Height="18"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="IconBrush" Color="#8e8e8e" />
+                            </Border.Background>
+                            <Border.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/search.png" RenderOptions.BitmapScalingMode="Fant" />
+                            </Border.OpacityMask>
+                        </Border>
+
+                        <!--  按钮状态动画  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#121212"
+                                            Duration="0:0:0.1" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#8e8e8e"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#323232"
+                                            Duration="0:0:0.2" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="White"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="ButtonBorder"
+                                            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SequenceButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="80" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#8e8e8e" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid" RenderTransformOrigin="0.5,0.5">
+                        <!--  整体缩放  -->
+                        <Grid.RenderTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                        </Grid.RenderTransform>
+
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+
+                            <!--  文字  -->
+                            <TextBlock
+                                x:Name="LabelText"
+                                Padding="0,0,0,0.5"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="Medium"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="最近播放" />
+
+                            <!--  图标  -->
+                            <Border
+                                x:Name="Icon"
+                                Width="17"
+                                Height="17"
+                                Margin="5,0,0,0"
+                                RenderOptions.BitmapScalingMode="Fant"
+                                RenderTransformOrigin="0.5,0.5"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="True">
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="IconBrush" Color="#8e8e8e" />
+                                </Border.Background>
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/menu.png" RenderOptions.BitmapScalingMode="Fant" />
+                                </Border.OpacityMask>
+                            </Border>
+                        </StackPanel>
+
+                        <!--  动画状态  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1.04"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1.04"
+                                            Duration="0:0:0.1" />
+                                        <!--  文字颜色变亮  -->
+                                        <ColorAnimation
+                                            Storyboard.TargetName="LabelText"
+                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                            To="White"
+                                            Duration="0:0:0.2" />
+                                        <!--  图标颜色变亮  -->
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="White"
+                                            Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RootGrid"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <!--  文字颜色微变  -->
+                                        <ColorAnimation
+                                            Storyboard.TargetName="LabelText"
+                                            Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#464646"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="checkButtonStyle" TargetType="Button">
+        <!--  外部可控制大小  -->
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid">
+                        <!--  自动缩放图标区域  -->
+                        <Viewbox Margin="0" Stretch="Uniform">
+                            <Border
+                                x:Name="Icon"
+                                Width="16"
+                                Height="16"
+                                RenderOptions.BitmapScalingMode="Fant"
+                                RenderTransformOrigin="0.5,0.5"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="True">
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="IconBrush" Color="#CCCCCC" />
+                                </Border.Background>
+                                <Border.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </Border.RenderTransform>
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/check.png" RenderOptions.BitmapScalingMode="Fant" />
+                                </Border.OpacityMask>
+                            </Border>
+                        </Viewbox>
+
+                        <!--  状态动画  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#CCCCCC"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#FFFFFF"
+                                            Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1.1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1.1"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#BFBFBF"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="uncheckButtonStyle" TargetType="Button">
+        <!--  外部可控制大小  -->
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="RootGrid">
+                        <!--  自动缩放图标区域  -->
+                        <Viewbox Margin="0" Stretch="Uniform">
+                            <Border
+                             x:Name="Icon"
+                             Width="16"
+                             Height="16"
+                             RenderOptions.BitmapScalingMode="Fant"
+                             RenderTransformOrigin="0.5,0.5"
+                             SnapsToDevicePixels="True"
+                             UseLayoutRounding="True">
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="IconBrush" Color="#CCCCCC" />
+                                </Border.Background>
+                                <Border.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </Border.RenderTransform>
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/uncheck.png" RenderOptions.BitmapScalingMode="Fant" />
+                                </Border.OpacityMask>
+                            </Border>
+                        </Viewbox>
+
+                        <!--  状态动画  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                         Storyboard.TargetName="IconBrush"
+                                         Storyboard.TargetProperty="Color"
+                                         To="#CCCCCC"
+                                         Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                         To="1"
+                                         Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="1"
+                                         Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                         Storyboard.TargetName="IconBrush"
+                                         Storyboard.TargetProperty="Color"
+                                         To="#FFFFFF"
+                                         Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                         To="1.1"
+                                         Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="1.1"
+                                         Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                         Storyboard.TargetName="IconBrush"
+                                         Storyboard.TargetProperty="Color"
+                                         To="#BFBFBF"
+                                         Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                         To="0.98"
+                                         Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Icon"
+                                         Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="0.98"
+                                         Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
