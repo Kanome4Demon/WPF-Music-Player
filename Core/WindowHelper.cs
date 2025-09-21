@@ -16,7 +16,7 @@ public static class WindowHelper
         else
         {
             window.WindowState = WindowState.Normal;
-            mainBorder.Margin = new Thickness(20);
+            mainBorder.Margin = new Thickness(0);
             maxRestoreButton.Content = "\xE922";
             maxRestoreButton.ToolTip = "最大化";
         }

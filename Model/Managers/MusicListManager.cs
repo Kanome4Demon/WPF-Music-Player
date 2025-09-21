@@ -17,7 +17,6 @@ namespace WPFMusicPlayerDemo.Model.Managers
             _trackFactory = trackFactory;
         }
 
-
         public void AddMusicFiles(IEnumerable<string> filePaths)
         {
             foreach (var filePath in filePaths)

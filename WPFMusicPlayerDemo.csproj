@@ -11,12 +11,77 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Icons\add-list.png" />
+    <None Remove="Images\Icons\arrows.png" />
+    <None Remove="Images\Icons\cloud-computing.png" />
+    <None Remove="Images\Icons\cloud-computing1.png" />
+    <None Remove="Images\Icons\cloud-computing2.png" />
+    <None Remove="Images\Icons\download.png" />
+    <None Remove="Images\Icons\downloading.png" />
+    <None Remove="Images\Icons\loop.png" />
+    <None Remove="Images\Icons\playlist.png" />
+    <None Remove="Images\Icons\queue.png" />
+    <None Remove="Images\Icons\shuffle.png" />
+    <None Remove="Images\Icons\shuffle_m.png" />
+    <None Remove="Images\T.png" />
+    <None Remove="Images\W1.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ColorThief.ImageSharp" Version="1.0.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MaterialDesignInXamlToolkitAddOns" Version="0.0.63" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\Icons\add-list.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\arrows.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\cloud-computing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\cloud-computing1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\cloud-computing2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\download.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\downloading.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\loop.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\playlist.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\queue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\shuffle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Icons\shuffle_m.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\T.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\W1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
