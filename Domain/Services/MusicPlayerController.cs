@@ -1,0 +1,202 @@
+﻿using NAudio.Dsp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using WPFMusicPlayerDemo.Audio;
+using WPFMusicPlayerDemo.Audio.Player;
+using WPFMusicPlayerDemo.PlayModes;
+using WPFMusicPlayerDemo.Queue;
+using WPFMusicPlayerDemo.Model.Entities;
+
+namespace WPFMusicPlayerDemo.Core
+{
+    public class MusicPlayerController : IDisposable
+    {
+        private readonly IAudioPlayer _audioPlayer;
+        private readonly IQueueManager _queueManager;
+        private IPlayModeStrategy _playModeStrategy;
+        private bool _isManualStop = false;
+        private MusicTrack? _currentTrack;
+        public MusicTrack? CurrentTrack => _currentTrack;
+
+
+        public PlayMode CurrentPlayMode { get; private set; } = PlayMode.Sequential;
+        public bool IsPlaying => _audioPlayer.IsPlaying;
+
+        public event Action<bool> OnPlayStateChanged;
+        public event Action<TimeSpan, TimeSpan> OnPositionChanged;
+        public event Action<string> OnTrackChanged;
+
+        public MusicPlayerController()
+        {
+            // 🔹 注入音频播放器，并启用均衡器
+            _audioPlayer = new NAudioPlayer(equalizerFactory: sp =>
+            {
+                var reader = sp;
+                int channels = reader.WaveFormat.Channels;
+
+                var equalizer = new MultiChannelEqualizer(channels, ch =>
+                {
+                    return new IFilter[]
+                    {
+                        new BiQuadFilterAdapter(BiQuadFilter.LowShelf(
+                            reader.WaveFormat.SampleRate, 100, 0.7f, 3f)),
+                        new BiQuadFilterAdapter(BiQuadFilter.HighShelf(
+                            reader.WaveFormat.SampleRate, 10000, 0.7f, 3f))
+                    };
+                });
+
+                return new EqualizerSampleProvider(reader, equalizer);
+            });
+            _queueManager = new DefaultQueueManager();  // 注入队列管理实现
+
+            // 事件订阅
+            _audioPlayer.OnPlayStateChanged += state => OnPlayStateChanged?.Invoke(state);
+            _audioPlayer.OnPositionChanged += (cur, total) => OnPositionChanged?.Invoke(cur, total);
+
+            // 🔹 自动播放下一首
+            _audioPlayer.PlaybackStopped += ex =>
+            {
+                if (_isManualStop || ex != null) return;
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    string nextTrack = _playModeStrategy.GetNextTrack(_queueManager);
+                    if (nextTrack != null)
+                        Play(nextTrack);
+                }));
+            };
+
+            // 默认模式
+            SetPlayMode(CurrentPlayMode);
+        }
+
+        #region PlayMode
+        public void SetPlayMode(PlayMode mode)
+        {
+            CurrentPlayMode = mode;
+            _playModeStrategy = mode switch
+            {
+                PlayMode.Sequential => new SequentialMode(),
+                PlayMode.Shuffle => new ShuffleMode(),
+                PlayMode.RepeatOne => new RepeatOneMode(),
+                PlayMode.StopAfterCurrent => new StopAfterCurrentMode(),
+                _ => new SequentialMode()
+            };
+        }
+        #endregion
+
+        #region QueueManagement
+        public void SetQueue(IEnumerable<string> files, int startIndex = 0)
+        {
+            _queueManager.SetQueue(files, startIndex);
+            Play(_queueManager.GetCurrent());
+        }
+
+        public void AddToQueue(string filePath)
+        {
+            _queueManager.AddToQueue(filePath);
+        }
+
+        public void PlayAtIndex(int index)
+        {
+            if (index >= 0 && index < _queueManager.Count)
+            {
+                _queueManager.SetCurrentIndex(index);
+                Play(_queueManager.GetCurrent());
+            }
+        }
+
+        public void LoadPlaylist(Playlist playlist, int startIndex = 0)
+        {
+            if (playlist == null || playlist.Tracks.Count == 0) return;
+
+            var paths = playlist.Tracks.Select(t => t.FilePath);
+            _queueManager.SetQueue(paths, startIndex);
+            Play(_queueManager.GetCurrent());
+        }
+
+        #endregion
+
+        #region PlaybackControl
+        public void Play(string filePath)
+        {
+            _isManualStop = false;
+            _audioPlayer.Play(filePath);
+
+            try
+            {
+                // 🔹 尝试读取元数据
+                var tagFile = TagLib.File.Create(filePath);
+                _currentTrack = new MusicTrack
+                {
+                    FilePath = filePath,
+                    FileName = System.IO.Path.GetFileName(filePath), // ✅ 新增这一行
+                    Title = string.IsNullOrWhiteSpace(tagFile.Tag.Title)
+        ? System.IO.Path.GetFileNameWithoutExtension(filePath)
+        : tagFile.Tag.Title,
+                    Artist = tagFile.Tag.FirstPerformer ?? "未知艺术家",
+                    Duration = tagFile.Properties.Duration
+                };
+            }
+            catch
+            {
+                // 🔹 如果读取失败，使用文件名作为标题
+                _currentTrack = new MusicTrack
+                {
+                    FilePath = filePath,
+                    FileName = System.IO.Path.GetFileName(filePath),
+                    Title = System.IO.Path.GetFileNameWithoutExtension(filePath),
+                    Artist = "未知艺术家",
+                    Duration = TimeSpan.Zero
+                };
+            }
+
+            OnTrackChanged?.Invoke(filePath);
+        }
+
+
+        public void TogglePlayPause()
+        {
+            _audioPlayer.Pause();
+        }
+
+        public void Stop()
+        {
+            _isManualStop = true;
+            _audioPlayer.Stop();
+        }
+
+        public void Seek(TimeSpan position)
+        {
+            _audioPlayer.Seek(position);
+        }
+
+        public void NextTrack()
+        {
+            _isManualStop = true;
+            string nextTrack = _playModeStrategy.GetNextTrack(_queueManager);
+            if (nextTrack != null)
+                Play(nextTrack);
+            else if (CurrentPlayMode == PlayMode.StopAfterCurrent)
+                Stop();
+            _isManualStop = false;
+        }
+
+        public void PreviousTrack()
+        {
+            _isManualStop = true;
+            string prevTrack = _playModeStrategy.GetPreviousTrack(_queueManager);
+            if (prevTrack != null)
+                Play(prevTrack);
+            _isManualStop = false;
+        }
+        #endregion
+
+        public void Dispose()
+        {
+            _audioPlayer.Dispose();
+        }
+    }
+}

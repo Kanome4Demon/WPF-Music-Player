@@ -1,0 +1,391 @@
+﻿<UserControl
+    x:Class="WPFMusicPlayerDemo.Views.MenuList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WPFMusicPlayerDemo.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="550"
+    d:DesignWidth="240"
+    mc:Ignorable="d">
+
+    <Border
+        x:Name="MenuListBorder"
+        Margin="7,0,3,5"
+        Background="#121212"
+        BorderThickness="0"
+        SizeChanged="MusicBorder_SizeChanged">
+        <Grid
+            Margin="10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Cursor="">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <!--  DataGrid  -->
+                <RowDefinition Height="35" />
+                <!--  第一行标题+按钮  -->
+
+                <RowDefinition Height="10" />
+
+                <RowDefinition Height="35" />
+                <!--  第二行按钮 (按钮3,4)  -->
+
+                <RowDefinition Height="5" />
+
+                <RowDefinition Height="35" />
+                <!--  第三行按钮 (按钮5,6)  -->
+                <RowDefinition Height="*" />
+                <!--  ListBox  -->
+                <RowDefinition Height="28" />
+                <!--  ComboBox  -->
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+
+            <!--  DataGrid  -->
+            <DataGrid
+                x:Name="QueueDataGrid"
+                Grid.Row="0"
+                Height="220"
+                HorizontalAlignment="Stretch"
+                AutoGenerateColumns="False"
+                Background="#121212"
+                BorderThickness="0"
+                CanUserAddRows="False"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                Visibility="Collapsed">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="40"
+                        Binding="{Binding Index}"
+                        Header="#" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding Title}"
+                        Header="Title" />
+                    <DataGridTextColumn
+                        Width="150"
+                        Binding="{Binding Artist}"
+                        Header="Artist" />
+                    <DataGridTextColumn
+                        Width="80"
+                        Binding="{Binding Duration}"
+                        Header="Duration" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--  第一行：标题 + 右侧按钮  -->
+            <Grid
+                Grid.Row="1"
+                Margin="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="6,0,0,0"
+                    VerticalAlignment="Center"
+                    Cursor=""
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="音乐库" />
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  创建按钮  -->
+                    <Button
+                        x:Name="CreateButton"
+                        Margin="0,0,0,0"
+                        Click="CreateButton_Click"
+                        Content="创建"
+                        Cursor="Hand"
+                        Style="{StaticResource CreateButtonStyle}" />
+
+                    <!--  浮层输入框 Popup  -->
+                    <Popup
+                        x:Name="CreatePlaylistPopup"
+                        AllowsTransparency="True"
+                        Placement="Bottom"
+                        PlacementTarget="{Binding ElementName=CreateButton}"
+                        PopupAnimation="Fade"
+                        StaysOpen="True">
+                        <Border
+                            Padding="10"
+                            Background="#1e1e1e"
+                            BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <StackPanel>
+                                <TextBox
+                                    x:Name="PlaylistNameTextBox"
+                                    Width="150"
+                                    Height="24"
+                                    Margin="0,0,0,5"
+                                    VerticalContentAlignment="Center"
+                                    Background="#2a2a2a"
+                                    BorderBrush="Gray"
+                                    Foreground="White" />
+                                <Button
+                                    Width="50"
+                                    Height="24"
+                                    Click="ApplyCreatePlaylist_Click"
+                                    Content="应用" />
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </Grid>
+
+            <!--  第三行按钮：按钮3,4  -->
+            <Grid
+                x:Name="rootGrid"
+                Grid.Row="3"
+                Margin="5,0,5,0"
+                Background="Transparent"
+                Cursor="">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    x:Name="BaseBackground"
+                    Grid.ColumnSpan="3"
+                    Width="Auto"
+                    Height="28"
+                    Panel.ZIndex="0"
+                    Background="#232323"
+                    CornerRadius="14" />
+                <!--  跨所有列覆盖整个按钮区域  -->
+
+                <!--  滑动背景（中层）  -->
+                <Border
+                    x:Name="SelectedBackground"
+                    Width="50"
+                    Height="28"
+                    Panel.ZIndex="1"
+                    Background="#464646"
+                    CornerRadius="14"
+                    RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <TransformGroup>
+                            <!--  缩放  -->
+                            <ScaleTransform ScaleX="0.9" ScaleY="0.84" />
+                            <!--  平移  -->
+                            <TranslateTransform x:Name="SelectionTranslate" X="0" />
+                        </TransformGroup>
+                    </Border.RenderTransform>
+                </Border>
+
+
+                <!--  文字层（最上层）  -->
+                <TextBlock
+                    Grid.Column="0"
+                    Padding="0,0,0,0.5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Panel.ZIndex="2"
+                    Foreground="White"
+                    IsHitTestVisible="False"
+                    Text="歌单" />
+                <TextBlock
+                    Grid.Column="2"
+                    Padding="0,0,0,0.5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Panel.ZIndex="2"
+                    Foreground="White"
+                    IsHitTestVisible="False"
+                    Text="云盘" />
+
+                <!--  原按钮模板只保留悬停/按下效果（底层）  -->
+                <Button
+                    x:Name="BtnPlaylist"
+                    Grid.Column="0"
+                    Margin="0,0,0,0"
+                    Click="BtnPlaylist_Click"
+                    Cursor="Hand"
+                    Style="{StaticResource SellectButton}" />
+                <Button
+                    x:Name="BtnCloud"
+                    Grid.Column="2"
+                    Margin="0,0,0,0"
+                    Click="BtnCloud_Click"
+                    Cursor="Hand"
+                    Style="{StaticResource SellectButton}" />
+            </Grid>
+
+            <!--  第二行按钮：按钮5,6  -->
+            <Grid
+                Grid.Row="5"
+                Margin="5,0,5,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel
+                    Grid.Column="0"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Cursor=""
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,0,0"
+                        Content="搜索"
+                        Cursor="Hand"
+                        Style="{StaticResource SearchButtonStyle}" />
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <!--  排序按钮  -->
+                    <Button
+                        x:Name="SequenceButton"
+                        Margin="0,0,0,0"
+                        Content="切换排序"
+                        Cursor="Hand"
+                        Style="{StaticResource SequenceButtonStyle}" />
+                </StackPanel>
+
+            </Grid>
+
+            <!--  ListBox  -->
+            <ListBox
+                x:Name="PlaylistListBox"
+                Grid.Row="6"
+                Margin="0,0,0,0"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                ItemsSource="{Binding Playlists}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                SelectionMode="Single">
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border
+                                        x:Name="RowBorder"
+                                        MinHeight="40"
+                                        Background="Transparent"
+                                        CornerRadius="5"
+                                        SnapsToDevicePixels="True">
+                                        <ContentPresenter VerticalAlignment="Center" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <!--  每行的模板  -->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  播放列表名  -->
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="White"
+                                Text="{Binding Name}" />
+
+                            <!--  按钮容器  -->
+                            <Grid
+                                Grid.Column="1"
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <Button
+                                    x:Name="UncheckBtn"
+                                    Click="PlaylistButton_Click"
+                                    Style="{StaticResource uncheckButtonStyle}" />
+                                <Button
+                                    x:Name="CheckBtn"
+                                    Click="PlaylistButton_Click"
+                                    Style="{StaticResource checkButtonStyle}" />
+                            </Grid>
+
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+
+            <!--  其他按钮  -->
+            <!--<Button
+                Grid.Row="5"
+                Width="80"
+                Margin="0,10,0,0"
+                Click="CreatePlaylistButton_Click"
+                Content="新建歌单" />-->
+
+            <Grid
+                Grid.Row="7"
+                Height="28"
+                Margin="5,0,5,0">
+                <!--  背景椭圆长条  -->
+                <Border
+                    x:Name="Background"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="#232323"
+                    CornerRadius="5" />
+
+                <!--  显示文字  -->
+                <TextBlock
+                    x:Name="PlaylistDisplay"
+                    Margin="0,0,0,0.5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="#d9d9d9"
+                    Text="未选择歌单" />
+            </Grid>
+
+            <!--<Button
+                Name="BtnCloudDrive"
+                Grid.Row="7"
+                Width="80"
+                Margin="0,10,0,0"
+                Click="BtnCloudDrive_Click"
+                Content="音乐云盘" />
+            <Button
+                Name="BtnPlaylist"
+                Grid.Row="8"
+                Width="80"
+                Margin="0,10,0,10"
+                Content="歌单" />-->
+        </Grid>
+    </Border>
+</UserControl>

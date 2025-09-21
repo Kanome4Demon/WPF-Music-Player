@@ -4,5 +4,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WPFMusicPlayerDemo"
     StartupUri="MainWindow.xaml">
-    <Application.Resources />
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- ✅ 先注册 Converter（让下面的字典可以引用到） -->
+            <local:AddOneConverter x:Key="AddOneConverter" />
+
+            <!-- ✅ 再合并样式 -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="UI/Styles/Buttons.xaml" />
+                <ResourceDictionary Source="UI/Styles/Buttons2.xaml" />
+                <ResourceDictionary Source="UI/Styles/Buttons3.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

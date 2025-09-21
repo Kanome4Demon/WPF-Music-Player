@@ -1,0 +1,553 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  播放按钮样式  -->
+    <Style x:Key="CirclePlayButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <ScaleTransform x:Name="ButtonScale" ScaleX="1" ScaleY="1" />
+                        </Grid.RenderTransform>
+
+                        <!--  🔹 圆形背景  -->
+                        <Ellipse
+                            x:Name="Circle"
+                            Fill="White"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Ellipse.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="0"
+                                    Opacity="0"
+                                    ShadowDepth="0"
+                                    Color="Black" />
+                            </Ellipse.Effect>
+                        </Ellipse>
+
+                        <!--  🔹 使用图片作为 OpacityMask  -->
+                        <Border
+                            x:Name="Icon"
+                            Width="15"
+                            Height="15"
+                            Margin="2,1,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="IconBrush" Color="black" />
+                            </Border.Background>
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <Border.OpacityMask>
+                                <!--  ⚠️ 修改为你的实际播放图标路径  -->
+                                <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/play.png" RenderOptions.BitmapScalingMode="Fant" />
+                            </Border.OpacityMask>
+                        </Border>
+
+                        <!--  🔹 状态动画  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                            To="White"
+                                            Duration="0:0:0.1" />
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="Black"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                            To="#57d982"
+                                            Duration="0:0:0.15" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            To="1.1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            To="1.1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="10"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0.3"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="Circle"
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                            To="#429e5f"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            To="0.95"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="ButtonScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            To="0.95"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  上传按钮  -->
+    <Style x:Key="ImageButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!--  Border 承载颜色，黑色图作为 OpacityMask  -->
+                        <Border
+                            x:Name="Icon"
+                            Width="31"
+                            Height="31"
+                            Margin="0,0.25,0,0"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="IconBrush" Color="#888888" />
+                            </Border.Background>
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="0"
+                                    Opacity="0"
+                                    ShadowDepth="0"
+                                    Color="Black" />
+                            </Border.Effect>
+                            <Border.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/cloud-computing2.png" RenderOptions.BitmapScalingMode="Fant" />
+                            </Border.OpacityMask>
+                        </Border>
+
+                        <!--  VisualStateManager  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#CCCCCC"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#d9d9d9"
+                                            Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="3"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0.2"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#bfbfbf"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  下载按钮  -->
+    <Style x:Key="DowloadButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!--  Border 承载颜色，黑色图作为 OpacityMask  -->
+                        <Border
+                            x:Name="Icon"
+                            Width="30"
+                            Height="30"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="IconBrush" Color="#888888" />
+                            </Border.Background>
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="0"
+                                    Opacity="0"
+                                    ShadowDepth="0"
+                                    Color="Black" />
+                            </Border.Effect>
+                            <Border.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/download.png" RenderOptions.BitmapScalingMode="Fant" />
+                            </Border.OpacityMask>
+                        </Border>
+
+                        <!--  VisualStateManager  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#CCCCCC"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#d9d9d9"
+                                            Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="3"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0.2"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#bfbfbf"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  添加列表按钮  -->
+    <Style x:Key="AddListButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!--  Border 承载颜色，黑色图作为 OpacityMask  -->
+                        <Border
+                            x:Name="Icon"
+                            Width="30"
+                            Height="30"
+                            RenderOptions.BitmapScalingMode="Fant"
+                            RenderTransformOrigin="0.5,0.5"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="IconBrush" Color="#888888" />
+                            </Border.Background>
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="0"
+                                    Opacity="0"
+                                    ShadowDepth="0"
+                                    Color="Black" />
+                            </Border.Effect>
+                            <Border.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/WPFMusicPlayerDemo;component/Assets/Images/Icons/add-list.png" RenderOptions.BitmapScalingMode="Fant" />
+                            </Border.OpacityMask>
+                        </Border>
+
+                        <!--  VisualStateManager  -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!--  默认  -->
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#CCCCCC"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  悬停  -->
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#d9d9d9"
+                                            Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="1.06"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                            To="3"
+                                            Duration="0:0:0.1" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                            To="0.2"
+                                            Duration="0:0:0.1" />
+                                    </Storyboard>
+                                </VisualState>
+
+                                <!--  按下  -->
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation
+                                            Storyboard.TargetName="IconBrush"
+                                            Storyboard.TargetProperty="Color"
+                                            To="#bfbfbf"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="Icon"
+                                            Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                            To="0.98"
+                                            Duration="0:0:0.05" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
