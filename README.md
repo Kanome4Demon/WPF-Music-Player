@@ -182,4 +182,4 @@ WPFMusicPlayerDemo/
 ## 📸 界面展示
 
 ### 主界面
-![主界面](Assets/Demo.png)
+
