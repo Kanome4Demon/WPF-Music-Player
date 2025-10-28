@@ -183,4 +183,4 @@ WPFMusicPlayerDemo/
 
 ### 主界面
 
-![主界面](Assets/Demo.png)
+![主界面](Assets/Demo_V1.png)
