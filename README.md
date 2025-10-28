@@ -175,4 +175,11 @@ WPFMusicPlayerDemo/
 ├── App.xaml.cs
 ├── AssemblyInfo.cs
 └── WPFMusicPlayerDemo.sln               # 解决方案文件
+```
 
+---
+
+## 📸 界面展示
+
+### 主界面
+![主界面](Assets/Demo.png)
